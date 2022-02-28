@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET, BCRYPT_ROUNDS } = require("../secret");
 const { add, findAll, findBy } = require("../users/users-model");
+const { usernameExists, validateLogin } = require("./auth-middleware");
 
 router.get("/", async (req, res) => {
   let allUsers = await findAll();
@@ -13,7 +14,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/register", (req, res) => {
+router.post("/register", usernameExists, validateLogin, (req, res) => {
   const user = req.body;
 
   const hash = bcrypt.hashSync(user.password, BCRYPT_ROUNDS);
@@ -21,14 +22,14 @@ router.post("/register", (req, res) => {
 
   add(user)
     .then((newUser) => {
-      res.status(201).json(`${newUser.username} was added`);
+      res.status(201).json(newUser);
     })
     .catch(() => {
       res.status(500).json({ message: "error adding new user" });
     });
 });
 
-router.post("/login", (req, res) => {
+router.post("/login", validateLogin, (req, res) => {
   const { username, password } = req.body;
 
   findBy({ username })
