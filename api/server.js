@@ -1,12 +1,8 @@
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
-// const db = require("./data/db-config");
 const AuthRouter = require("./auth/auth-router");
-
-// function getAllUsers() {
-//   return db("users");
-// }
+const PotluckRouter = require("./potluck/potluck-router");
 
 // async function insertUser(user) {
 //   // WITH POSTGRES WE CAN PASS A "RETURNING ARRAY" AS 2ND ARGUMENT TO knex.insert/update
@@ -24,13 +20,6 @@ server.use(express.json());
 server.use(helmet());
 server.use(cors());
 server.use("/api/auth", AuthRouter);
-
-// server.get("/api/users", async (req, res) => {
-//   res.json({ message: "Users working" });
-// });
-
-// server.post("/api/users", async (req, res) => {
-//   res.status(201).json(await insertUser(req.body));
-// });
+server.use("/api/potluck", PotluckRouter);
 
 module.exports = server;
