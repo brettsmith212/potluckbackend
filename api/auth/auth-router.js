@@ -4,8 +4,9 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET, BCRYPT_ROUNDS } = require("../secret");
 const { add, findAll, findBy } = require("../users/users-model");
 const { usernameExists, validateLogin } = require("./auth-middleware");
+const restricted = require("./restricted");
 
-router.get("/", async (req, res) => {
+router.get("/", restricted, async (req, res) => {
   let allUsers = await findAll();
   if (allUsers) {
     res.status(200).json(allUsers);
