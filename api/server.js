@@ -20,6 +20,6 @@ server.use(express.json());
 server.use(helmet());
 server.use(cors());
 server.use("/api/auth", AuthRouter);
-server.use("/api/potluck", PotluckRouter);
+server.use("/api", PotluckRouter);
 
 module.exports = server;

@@ -8,8 +8,15 @@ const {
   addItem,
   findPotluck,
 } = require("./potluck-model");
+const restricted = require("../auth/restricted");
+const {
+  potluckIdExists,
+  checkPotluck,
+  checkGuest,
+  checkItem,
+} = require("./potluck-middleware");
 
-router.get("/", (req, res) => {
+router.get("/potluck", restricted, (req, res) => {
   allPotlucks()
     .then((potlucks) => {
       res.status(200).json(potlucks);
@@ -19,7 +26,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/potluck/:id", (req, res) => {
+router.get("/potluck/:id", restricted, potluckIdExists, (req, res) => {
   findPotluck(req.params.id)
     .then((potluck) => {
       res.status(200).json(potluck);
@@ -31,7 +38,7 @@ router.get("/potluck/:id", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
+router.post("/potluck", restricted, checkPotluck, (req, res) => {
   const potluck = req.body;
 
   addPotluck(potluck)
@@ -43,7 +50,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.get("/guests", (req, res) => {
+router.get("/guests", restricted, (req, res) => {
   console.log("Guests");
   allGuests()
     .then((guests) => {
@@ -54,7 +61,7 @@ router.get("/guests", (req, res) => {
     });
 });
 
-router.post("/guests", (req, res) => {
+router.post("/guests", restricted, checkGuest, (req, res) => {
   const guest = req.body;
 
   addGuest(guest)
@@ -66,7 +73,7 @@ router.post("/guests", (req, res) => {
     });
 });
 
-router.get("/items", (req, res) => {
+router.get("/items", restricted, (req, res) => {
   allItems()
     .then((items) => {
       res.status(200).json(items);
@@ -76,7 +83,7 @@ router.get("/items", (req, res) => {
     });
 });
 
-router.post("/items", (req, res) => {
+router.post("/items", restricted, checkItem, (req, res) => {
   const item = req.body;
 
   addItem(item)

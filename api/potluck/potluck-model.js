@@ -71,6 +71,11 @@ async function addGuest(guest) {
   return newGuest;
 }
 
+async function findGuest(guest_id) {
+  const guest = await db("guests").where("guest_id", guest_id).first();
+  return guest;
+}
+
 async function addItem(item) {
   const [newItem] = await db("items").insert(item, [
     "items_id",
@@ -78,6 +83,11 @@ async function addItem(item) {
     "guest_id",
   ]);
   return newItem;
+}
+
+async function findItemByGuestId(guest_id) {
+  const item = await db("items").where("guest_id", guest_id).first();
+  return item;
 }
 
 module.exports = {
@@ -88,5 +98,7 @@ module.exports = {
   findPotluck,
   addPotluck,
   addGuest,
+  findGuest,
   addItem,
+  findItemByGuestId,
 };
