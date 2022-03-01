@@ -4,6 +4,9 @@ const {
   allPotlucks,
   addGuest,
   allGuests,
+  allItems,
+  addItem,
+  findPotluck,
 } = require("./potluck-model");
 
 router.get("/", (req, res) => {
@@ -13,6 +16,18 @@ router.get("/", (req, res) => {
     })
     .catch(() => {
       res.status(500).json({ message: "error getting potlucks" });
+    });
+});
+
+router.get("/potluck/:id", (req, res) => {
+  findPotluck(req.params.id)
+    .then((potluck) => {
+      res.status(200).json(potluck);
+    })
+    .catch(() => {
+      res
+        .status(500)
+        .json({ message: `error getting potluck ${req.params.id}` });
     });
 });
 
@@ -29,6 +44,7 @@ router.post("/", (req, res) => {
 });
 
 router.get("/guests", (req, res) => {
+  console.log("Guests");
   allGuests()
     .then((guests) => {
       res.status(200).json(guests);
@@ -47,6 +63,28 @@ router.post("/guests", (req, res) => {
     })
     .catch(() => {
       res.status(500).json({ message: "error adding guest" });
+    });
+});
+
+router.get("/items", (req, res) => {
+  allItems()
+    .then((items) => {
+      res.status(200).json(items);
+    })
+    .catch(() => {
+      res.status(500).json({ message: "error getting items" });
+    });
+});
+
+router.post("/items", (req, res) => {
+  const item = req.body;
+
+  addItem(item)
+    .then((newItem) => {
+      res.status(201).json(newItem);
+    })
+    .catch(() => {
+      res.status(500).json({ message: "error adding item" });
     });
 });
 

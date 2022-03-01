@@ -19,7 +19,9 @@ exports.up = async (knex) => {
         .integer("potluck_id")
         .unsigned()
         .references("potluck_id")
-        .inTable("potluck");
+        .inTable("potluck")
+        .onUpdate("CASCADE")
+        .onDelete("CASCADE");
     })
     .createTable("items", (items) => {
       items.increments("items_id");
@@ -28,7 +30,9 @@ exports.up = async (knex) => {
         .integer("guest_id")
         .unsigned()
         .references("guest_id")
-        .inTable("guests");
+        .inTable("guests")
+        .onUpdate("CASCADE")
+        .onDelete("CASCADE");
     });
 };
 
