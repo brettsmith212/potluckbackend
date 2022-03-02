@@ -2,9 +2,10 @@ const {
   findPotluck,
   findGuest,
   findItemByGuestId,
+  findItem,
 } = require("./potluck-model");
 
-const guestIdExists = async (id) => {
+const checkGuestId = async (id) => {
   const guest = await findGuest(id);
   if (guest) {
     return guest;
@@ -19,6 +20,30 @@ const potluckIdExists = async (req, res, next) => {
     res
       .status(400)
       .json({ message: `Potluck ID ${req.params.id} does not exist` });
+    return;
+  } else {
+    next();
+  }
+};
+
+const guestIdExists = async (req, res, next) => {
+  const result = await findGuest(req.params.id);
+  if (!result) {
+    res
+      .status(400)
+      .json({ message: `Guest ID ${req.params.id} does not exist` });
+    return;
+  } else {
+    next();
+  }
+};
+
+const itemIdExists = async (req, res, next) => {
+  const result = await findItem(req.params.id);
+  if (!result) {
+    res
+      .status(400)
+      .json({ message: `Item ID ${req.params.id} does not exist` });
     return;
   } else {
     next();
@@ -62,7 +87,7 @@ const checkItem = async (req, res, next) => {
   }
 
   // Checks if guest_id exists
-  const guest = await guestIdExists(guest_id);
+  const guest = await checkGuestId(guest_id);
   console.log(guest);
   if (!guest) {
     res.status(400).json({ message: "please enter a valid guest_id" });
@@ -86,4 +111,6 @@ module.exports = {
   checkPotluck,
   checkGuest,
   checkItem,
+  guestIdExists,
+  itemIdExists,
 };

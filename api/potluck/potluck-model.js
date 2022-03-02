@@ -62,6 +62,12 @@ async function addPotluck(potluck) {
   return newPotluck;
 }
 
+async function deletePotluck(potluck_id) {
+  return await db("potluck")
+    .where({ potluck_id: potluck_id })
+    .del(["potluck_id", "date", "time", "location"]);
+}
+
 async function addGuest(guest) {
   const [newGuest] = await db("guests").insert(guest, [
     "guest_id",
@@ -76,6 +82,12 @@ async function findGuest(guest_id) {
   return guest;
 }
 
+async function deleteGuest(guest_id) {
+  return await db("guests")
+    .where({ guest_id: guest_id })
+    .del(["guest_id", "guest_name", "potluck_id"]);
+}
+
 async function addItem(item) {
   const [newItem] = await db("items").insert(item, [
     "items_id",
@@ -83,6 +95,17 @@ async function addItem(item) {
     "guest_id",
   ]);
   return newItem;
+}
+
+async function findItem(items_id) {
+  const item = await db("items").where("items_id", items_id).first();
+  return item;
+}
+
+async function deleteItem(items_id) {
+  return await db("items")
+    .where({ items_id: items_id })
+    .del(["items_id", "item_name", "guest_id"]);
 }
 
 async function findItemByGuestId(guest_id) {
@@ -97,8 +120,12 @@ module.exports = {
   allGuestsByPotluckId,
   findPotluck,
   addPotluck,
+  deletePotluck,
   addGuest,
   findGuest,
+  deleteGuest,
   addItem,
+  findItem,
+  deleteItem,
   findItemByGuestId,
 };

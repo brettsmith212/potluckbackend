@@ -7,6 +7,9 @@ const {
   allItems,
   addItem,
   findPotluck,
+  deletePotluck,
+  deleteGuest,
+  deleteItem,
 } = require("./potluck-model");
 const restricted = require("../auth/restricted");
 const {
@@ -14,6 +17,8 @@ const {
   checkPotluck,
   checkGuest,
   checkItem,
+  guestIdExists,
+  itemIdExists,
 } = require("./potluck-middleware");
 
 router.get("/potluck", restricted, (req, res) => {
@@ -50,6 +55,16 @@ router.post("/potluck", restricted, checkPotluck, (req, res) => {
     });
 });
 
+router.delete("/potluck/:id", restricted, potluckIdExists, (req, res) => {
+  deletePotluck(req.params.id)
+    .then((deletedPotluck) => {
+      res.status(200).json(deletedPotluck);
+    })
+    .catch(() => {
+      res.status(500).json({ message: "error deleting potluck" });
+    });
+});
+
 router.get("/guests", restricted, (req, res) => {
   console.log("Guests");
   allGuests()
@@ -73,6 +88,16 @@ router.post("/guests", restricted, checkGuest, (req, res) => {
     });
 });
 
+router.delete("/guests/:id", restricted, guestIdExists, (req, res) => {
+  deleteGuest(req.params.id)
+    .then((deletedGuest) => {
+      res.status(200).json(deletedGuest);
+    })
+    .catch(() => {
+      res.status(500).json({ message: "error deleting guest" });
+    });
+});
+
 router.get("/items", restricted, (req, res) => {
   allItems()
     .then((items) => {
@@ -92,6 +117,16 @@ router.post("/items", restricted, checkItem, (req, res) => {
     })
     .catch(() => {
       res.status(500).json({ message: "error adding item" });
+    });
+});
+
+router.delete("/items/:id", restricted, itemIdExists, (req, res) => {
+  deleteItem(req.params.id)
+    .then((deletedItem) => {
+      res.status(200).json(deletedItem);
+    })
+    .catch(() => {
+      res.status(500).json({ message: "error deleting item" });
     });
 });
 
