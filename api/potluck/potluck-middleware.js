@@ -60,6 +60,68 @@ const checkPotluck = (req, res, next) => {
   }
 };
 
+const checkUpdatingPotluck = (req, res, next) => {
+  let keys = Object.keys(req.body);
+  let badKeys = keys.filter((key) => {
+    switch (key) {
+      case "date":
+        break;
+      case "time":
+        break;
+      case "location":
+        break;
+      default:
+        return key;
+    }
+  });
+
+  if (badKeys.length > 0) {
+    res.status(400).json("Valid fields are date, time, or location");
+  } else {
+    next();
+  }
+};
+
+const checkUpdatingGuest = (req, res, next) => {
+  let keys = Object.keys(req.body);
+  let badKeys = keys.filter((key) => {
+    switch (key) {
+      case "guest_name":
+        break;
+      case "potluck_id":
+        break;
+      default:
+        return key;
+    }
+  });
+
+  if (badKeys.length > 0) {
+    res.status(400).json("Valid fields are guest_name or potluck_id");
+  } else {
+    next();
+  }
+};
+
+const checkUpdatingItem = (req, res, next) => {
+  let keys = Object.keys(req.body);
+  let badKeys = keys.filter((key) => {
+    switch (key) {
+      case "item_name":
+        break;
+      case "guest_id":
+        break;
+      default:
+        return key;
+    }
+  });
+
+  if (badKeys.length > 0) {
+    res.status(400).json("Valid fields are item_name or guest_id");
+  } else {
+    next();
+  }
+};
+
 const checkGuest = async (req, res, next) => {
   const { guest_name, potluck_id } = req.body;
   if (!guest_name || !potluck_id) {
@@ -88,7 +150,6 @@ const checkItem = async (req, res, next) => {
 
   // Checks if guest_id exists
   const guest = await checkGuestId(guest_id);
-  console.log(guest);
   if (!guest) {
     res.status(400).json({ message: "please enter a valid guest_id" });
     return;
@@ -109,6 +170,9 @@ const checkItem = async (req, res, next) => {
 module.exports = {
   potluckIdExists,
   checkPotluck,
+  checkUpdatingPotluck,
+  checkUpdatingGuest,
+  checkUpdatingItem,
   checkGuest,
   checkItem,
   guestIdExists,

@@ -10,6 +10,9 @@ const {
   deletePotluck,
   deleteGuest,
   deleteItem,
+  updatePotluck,
+  updateGuest,
+  updateItem,
 } = require("./potluck-model");
 const restricted = require("../auth/restricted");
 const {
@@ -19,6 +22,9 @@ const {
   checkItem,
   guestIdExists,
   itemIdExists,
+  checkUpdatingPotluck,
+  checkUpdatingGuest,
+  checkUpdatingItem,
 } = require("./potluck-middleware");
 
 router.get("/potluck", restricted, (req, res) => {
@@ -55,6 +61,26 @@ router.post("/potluck", restricted, checkPotluck, (req, res) => {
     });
 });
 
+router.put(
+  "/potluck/:id",
+  restricted,
+  potluckIdExists,
+  checkUpdatingPotluck,
+  (req, res) => {
+    const changes = req.body;
+
+    updatePotluck(req.params.id, changes)
+      .then((updatedPotluck) => {
+        res.status(201).json(updatedPotluck);
+      })
+      .catch(() => {
+        res
+          .status(500)
+          .json({ message: `error updating potluck ID ${req.params.id}` });
+      });
+  }
+);
+
 router.delete("/potluck/:id", restricted, potluckIdExists, (req, res) => {
   deletePotluck(req.params.id)
     .then((deletedPotluck) => {
@@ -66,7 +92,6 @@ router.delete("/potluck/:id", restricted, potluckIdExists, (req, res) => {
 });
 
 router.get("/guests", restricted, (req, res) => {
-  console.log("Guests");
   allGuests()
     .then((guests) => {
       res.status(200).json(guests);
@@ -87,6 +112,26 @@ router.post("/guests", restricted, checkGuest, (req, res) => {
       res.status(500).json({ message: "error adding guest" });
     });
 });
+
+router.put(
+  "/guests/:id",
+  restricted,
+  guestIdExists,
+  checkUpdatingGuest,
+  (req, res) => {
+    const changes = req.body;
+
+    updateGuest(req.params.id, changes)
+      .then((updatedGuest) => {
+        res.status(201).json(updatedGuest);
+      })
+      .catch(() => {
+        res
+          .status(500)
+          .json({ message: `error updating guest ID ${req.params.id}` });
+      });
+  }
+);
 
 router.delete("/guests/:id", restricted, guestIdExists, (req, res) => {
   deleteGuest(req.params.id)
@@ -119,6 +164,26 @@ router.post("/items", restricted, checkItem, (req, res) => {
       res.status(500).json({ message: "error adding item" });
     });
 });
+
+router.put(
+  "/items/:id",
+  restricted,
+  itemIdExists,
+  checkUpdatingItem,
+  (req, res) => {
+    const changes = req.body;
+
+    updateItem(req.params.id, changes)
+      .then((updatedItem) => {
+        res.status(201).json(updatedItem);
+      })
+      .catch(() => {
+        res
+          .status(500)
+          .json({ message: `error updating item ID ${req.params.id}` });
+      });
+  }
+);
 
 router.delete("/items/:id", restricted, itemIdExists, (req, res) => {
   deleteItem(req.params.id)

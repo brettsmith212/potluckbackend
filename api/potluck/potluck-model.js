@@ -62,6 +62,12 @@ async function addPotluck(potluck) {
   return newPotluck;
 }
 
+async function updatePotluck(potluck_id, changes) {
+  return await db("potluck")
+    .where({ potluck_id: potluck_id })
+    .update(changes, ["potluck_id", "date", "time", "location"]);
+}
+
 async function deletePotluck(potluck_id) {
   return await db("potluck")
     .where({ potluck_id: potluck_id })
@@ -80,6 +86,12 @@ async function addGuest(guest) {
 async function findGuest(guest_id) {
   const guest = await db("guests").where("guest_id", guest_id).first();
   return guest;
+}
+
+async function updateGuest(guest_id, changes) {
+  return await db("guests")
+    .where({ guest_id: guest_id })
+    .update(changes, ["guest_id", "guest_name", "potluck_id"]);
 }
 
 async function deleteGuest(guest_id) {
@@ -102,6 +114,12 @@ async function findItem(items_id) {
   return item;
 }
 
+async function updateItem(items_id, changes) {
+  return await db("items")
+    .where({ items_id: items_id })
+    .update(changes, ["items_id", "item_name", "guest_id"]);
+}
+
 async function deleteItem(items_id) {
   return await db("items")
     .where({ items_id: items_id })
@@ -120,12 +138,15 @@ module.exports = {
   allGuestsByPotluckId,
   findPotluck,
   addPotluck,
+  updatePotluck,
   deletePotluck,
   addGuest,
   findGuest,
+  updateGuest,
   deleteGuest,
   addItem,
   findItem,
+  updateItem,
   deleteItem,
   findItemByGuestId,
 };
